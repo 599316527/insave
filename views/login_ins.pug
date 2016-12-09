@@ -1,0 +1,79 @@
+html
+  head
+    meta(charset="utf-8")
+    title Insave
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js")
+    style.
+        body { word-break: break-all; }
+
+  body
+    div.container
+        h1 Insave
+        div.alert.alert-warning Your password won't be stored. It will be only used to request an authentication token which is required when fetching your recent liked images in Instagram. You are allowed to revoke the token anytime by changing your password.
+
+        form#js-login-form
+            .form-group
+                label(for='username') Username
+                input#username.form-control(type='text' name="username" placeholder='用户名' required)
+            .form-group
+                label(for='password') Password
+                input#password.form-control(type='password' name="password" required)
+            .checkbox
+                label
+                    input(type="checkbox")
+                    span I've known the risk of sending your instagram password to the third party.
+            button.btn.btn-primary(type='submit') Login
+
+        div#js-msg-board(style="display:none")
+            div.alert.alert-info Processing...
+
+    script.
+        var $msgBoard = $('#js-msg-board')
+        $('#js-login-form').on('submit', function (evt) {
+            evt.preventDefault()
+
+            $(this).hide()
+            $msgBoard.show()
+
+            $.ajax({
+                type: 'POST',
+                url: 'login_ins',
+                data: $(this).serialize(),
+                dataType: 'json',
+                timeout: 3e4,
+                success: function (data, status, xhr) {
+                    if (data.status == 'ok') {
+                        $msgBoard.html(getLinks(data.result))
+                    } else {
+                        $msgBoard.html(getError(data.message))
+                    }
+                },
+                error: function(xhr, errorType, error) {
+                    $msgBoard.html(getError(errorType + ' ' + error.message))
+                }
+            })
+        })
+
+        function getLinks(data) {
+            var urlTpls = [
+                '<a href="recent_likes/${username}/${token}" target="_blank">My recent liked images</a>'
+            ]
+            return '<div class="alert alert-info">Please save the following urls.</div>'
+                + '<ul class="list-group">' + urlTpls.map(function (urlTpl) {
+                    return '<li class="list-group-item">'
+                        + Object.keys(data).reduce(function (tpl, key) {
+                            var re = new RegExp('\\$\\{' + key + '\\}', 'g')
+                            return tpl.replace(re, data[key])
+                        }, urlTpl) + '</li>'
+                    })
+                + '</ul>'
+        }
+
+        function getError(msg) {
+            return '<div class="alert alert-danger">' + msg + '</div>'
+        }
+
+
+

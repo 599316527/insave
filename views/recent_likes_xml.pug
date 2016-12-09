@@ -1,0 +1,22 @@
+doctype xml
+rss(version="2.0")
+    channel
+        title #{user}'s recent liked images
+        link https://www.instagram.com/#{user}/
+        description -
+
+        each item in items
+            item
+                if item.caption
+                    title <![CDATA[#{item.caption.text}]]>
+                description <![CDATA[
+                    | #{item.caption ? item.caption.text : ''}
+                    | <img src="#{item.image_versions2.candidates[0].url}" />
+                    | ]]>
+                author #{item.user.username}
+                link https://www.instagram.com/p/#{item.code}/
+                category #{item.media_type}
+                enclosure(url=item.image_versions2.candidates[0].url type="image/jpeg")
+                pubDate #{(new Date(item.taken_at * 1000)).toGMTString()}
+                guid(isPermaLink="true") https://www.instagram.com/p/#{item.code}/
+

@@ -1,0 +1,23 @@
+{
+  "name": "insave",
+  "version": "0.1.0",
+  "description": "List my recent liked instagram images",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "forever": "forever -p ./log -a -l access.log -e error.log start server.js",
+    "never": "forever stop server.js"
+  },
+  "author": "Kyle He",
+  "license": "GPLv3",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0",
+    "node-fetch": "^1.6.3",
+    "pug": "^2.0.0-beta6",
+    "set-cookie-parser": "^1.0.2",
+    "underscore": "^1.8.3"
+  }
+}
