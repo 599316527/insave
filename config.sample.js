@@ -5,3 +5,8 @@ exports.encodeUserName = function (userName) {
         .join('')
     return encodeURIComponent(s).replace(/%/g, '').toLowerCase()
 }
+
+exports.recaptcha = {
+    site_key: '',
+    secret_key: ''
+}

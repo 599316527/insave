@@ -53,6 +53,27 @@ function generateVerifyTokenFromUserName(userName) {
 }
 exports.generateVerifyTokenFromUserName = generateVerifyTokenFromUserName
 
-exports.stringifyParams = function (params, joiner = '&') {
+function stringifyParams(params, joiner = '&') {
   return Object.keys(params).map(key => `${key}=${encodeURIComponent(params[key])}`).join(joiner)
+}
+exports.stringifyParams = stringifyParams
+
+exports.validateRecaptcha = function (response) {
+  return fetch('https://www.google.com/recaptcha/api/siteverify', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+    },
+    body: stringifyParams({
+      secret: config.recaptcha.secret_key,
+      response
+    })
+  }).then(function (res) {
+    return res.json()
+  }).then(function (json) {
+    if (json.success) {
+      return Promise.resolve()
+    }
+    return Promise.reject('Invalid recaptcha code (' + (json['error-codes'] && json['error-codes'].join(', ')) + ')')
+  })
 }

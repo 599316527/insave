@@ -7,6 +7,7 @@ var fetch = require('node-fetch');
 var helper = require('./helper')
 var recentLikes = require('./recent_likes');
 var insAccount = require('./ins_account');
+var config = require('./config');
 
 const SERVER_PORT = 8402;
 
@@ -18,12 +19,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 exports.home_page = function (req, res) {
   res.status(404);
-  res.render('login_ins', {});
+  res.render('login_ins', {recaptcha: config.recaptcha});
 };
 
 exports.login_ins = function (req, res) {
   let {username, password} = req.body
-  insAccount.login(username, password)
+  let recaptchaCode = req.body['g-recaptcha-response']
+
+  helper.validateRecaptcha(recaptchaCode)
+    .then(function () {
+      return insAccount.login(username, password)
+    })
     .then(function (data) {
       res.json({
         status: 'ok',

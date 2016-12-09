@@ -17,13 +17,18 @@ html
             .form-group
                 label(for='username') Username
                 input#username.form-control(type='text' name="username" placeholder='用户名' required)
+
             .form-group
                 label(for='password') Password
                 input#password.form-control(type='password' name="password" required)
+
             .checkbox
                 label
                     input(type="checkbox")
                     span I've known the risk of sending your instagram password to the third party.
+
+            div(class="g-recaptcha" data-sitekey=recaptcha.secret_key)
+
             button.btn.btn-primary(type='submit') Login
 
         div#js-msg-board(style="display:none")
