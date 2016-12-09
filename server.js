@@ -18,7 +18,6 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 exports.home_page = function (req, res) {
-  res.status(404);
   res.render('login_ins', {recaptcha: config.recaptcha});
 };
 
